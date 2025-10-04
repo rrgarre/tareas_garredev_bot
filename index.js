@@ -175,7 +175,7 @@ bot.action(/detail_(.+)/, (ctx) => {
 // 👉 Regulación NCC
 bot.command("almuerzo", async (ctx) => {
   try {
-    await fetch("https://www.ejemplo.ex"); // 👈 solo ejecuta la URL
+    await fetch("http://13.38.209.190:5000/generar_csv"); // 👈 solo ejecuta la URL
     ctx.reply("🍽️ Script de almuerzo ejecutado.");
   } catch (error) {
     console.error("Error al llamar la URL:", error);
