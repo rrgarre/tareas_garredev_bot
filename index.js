@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import { Telegraf, Markup } from "telegraf";
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
+import fetch from "node-fetch";
 
 dotenv.config();
 
@@ -175,11 +176,30 @@ bot.action(/detail_(.+)/, (ctx) => {
 // 👉 Regulación NCC
 bot.command("almuerzo", async (ctx) => {
   try {
-    await fetch("http://13.38.209.190:5000/generar_csv"); // 👈 solo ejecuta la URL
-    ctx.reply("🍽️ Script de almuerzo ejecutado.");
+    const response = await fetch("https://www.ejemplo.ex");
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // 🔽 Buffer del fichero
+    const buffer = await response.buffer();
+
+    // Nombre del archivo (si el servidor lo da en el header "content-disposition")
+    let filename = "archivo_descargado";
+    const disposition = response.headers.get("content-disposition");
+    if (disposition && disposition.includes("filename=")) {
+      filename = disposition.split("filename=")[1].replace(/["']/g, "");
+    }
+
+    // 📤 Enviar al chat como documento
+    await ctx.replyWithDocument(
+      { source: buffer, filename },
+      { caption: "📂 Aquí tienes el archivo de almuerzo" }
+    );
   } catch (error) {
-    console.error("Error al llamar la URL:", error);
-    ctx.reply("⚠️ Error al ejecutar el script.");
+    console.error("Error al descargar archivo:", error);
+    ctx.reply("⚠️ No se pudo descargar el archivo.");
   }
 });
 
