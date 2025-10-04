@@ -176,7 +176,7 @@ bot.action(/detail_(.+)/, (ctx) => {
 // 👉 Regulación NCC
 bot.command("almuerzo", async (ctx) => {
   try {
-    const response = await fetch("https://www.ejemplo.ex");
+    const response = await fetch("http://13.38.209.190:5000/generar_csv");
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
