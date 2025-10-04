@@ -11,6 +11,20 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 // Ruta del archivo JSON
 const TASKS_FILE = "./tasks.json";
 
+// 👉 Función para listar comandos
+function getCommandsList() {
+  return `
+📋 *Comandos disponibles*:
+/start - Iniciar el bot
+/add <tarea> - Añadir una tarea
+/list - Listar tareas pendientes
+/completed - Ver tareas completadas
+/detail <id> - Ver detalles de una tarea
+/almuerzo - Ejecutar script de almuerzo
+/help - Mostrar esta ayuda
+`;
+}
+
 // 📂 Cargar tareas
 function loadTasks() {
   if (!fs.existsSync(TASKS_FILE)) return [];
@@ -28,6 +42,11 @@ let tasks = loadTasks();
 // 👉 /start
 bot.start((ctx) => {
   ctx.reply("👋 Hola! Soy tu bot de tareas.\n\nComandos:\n➕ /add <tarea>\n📋 /list\n✅ /completed\nℹ️ /detail <id>");
+});
+
+// 👉 /help
+bot.command("help", (ctx) => {
+  ctx.reply(getCommandsList(), { parse_mode: "Markdown" });
 });
 
 // 👉 Añadir tarea
@@ -150,6 +169,18 @@ bot.action(/detail_(.+)/, (ctx) => {
     { parse_mode: "Markdown" }
   );
   ctx.answerCbQuery();
+});
+
+
+// 👉 Regulación NCC
+bot.command("almuerzo", async (ctx) => {
+  try {
+    await fetch("https://www.ejemplo.ex"); // 👈 solo ejecuta la URL
+    ctx.reply("🍽️ Script de almuerzo ejecutado.");
+  } catch (error) {
+    console.error("Error al llamar la URL:", error);
+    ctx.reply("⚠️ Error al ejecutar el script.");
+  }
 });
 
 // 🔄 Lanzar bot
